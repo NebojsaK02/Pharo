@@ -4,9 +4,6 @@ Class {
 	#instVars : [
 		'posts'
 	],
-	#classInstVars : [
-		'uniqueInstance'
-	],
 	#category : #MyTinyBlog
 }
 
@@ -44,7 +41,9 @@ desktop computers.' category: 'Pharo') visible: true)
 { #category : #initialization }
 MTBBlog class >> current [
 	"Odgovara instanci MTBRepository"
-	^ uniqueInstance  ifNil: [ uniqueInstance := self new ]
+	^ self selectAll
+	ifNotEmpty: [ :x | x anyOne ]
+	ifEmpty: [ self new save ]
 ]
 
 { #category : #initialization }
@@ -53,8 +52,19 @@ self reset
 ]
 
 { #category : #initialization }
+MTBBlog class >> initializeVoyageOnMemoryDB [ 
+	VOMemoryRepository new enableSingleton 
+]
+
+{ #category : #initialization }
+MTBBlog class >> isVoyageRoot [ 
+	"Potrebno za Voyage, Top-Level"
+	^ true
+]
+
+{ #category : #initialization }
 MTBBlog class >> reset [ 
-uniqueInstance :=nil
+	self initializeVoyageOnMemoryDB
 ]
 
 { #category : #'as yet unclassified' }
@@ -92,7 +102,8 @@ posts:=OrderedCollection new
 
 { #category : #initialization }
 MTBBlog >> removeAllPosts [
-	posts := OrderedCollection new 
+	posts := OrderedCollection new.
+	self save.
 ]
 
 { #category : #initialization }
@@ -103,5 +114,6 @@ MTBBlog >> size [
 { #category : #initialization }
 MTBBlog >> writeBlogPost: aPost [
 	"Dodaj blog post u listu postova"
-	posts add: aPost 
+	self allBlogPosts add: aPost.
+	self save
 ]

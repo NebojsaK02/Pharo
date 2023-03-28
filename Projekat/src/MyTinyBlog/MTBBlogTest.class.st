@@ -4,29 +4,26 @@ Class {
 	#instVars : [
 		'blog',
 		'post',
-		'first'
+		'first',
+		'previousRepository'
 	],
 	#category : #'MyTinyBlog-Tests'
 }
 
 { #category : #running }
 MTBBlogTest >> setUp [
+	previousRepository := VORepository current.
+	VORepository setRepository: VOMemoryRepository new.
 	blog := MTBBlog current.
-	blog removeAllPosts.
-	first := MTBPost
-		title: 'a title'
-		text: 'a text'
-		category: 'First Category'.
+	first := MTBPost title: 'A title' text: 'A text' category: 'First Category'.
 	blog writeBlogPost: first.
-	post := (MTBPost
-		title: 'Another title'
-		text: 'Another text'
-		category: 'Second Category')beVisible
+	post := (MTBPost title: 'Another title' text: 'Another text'
+	category: 'Second Category') beVisible
 ]
 
 { #category : #running }
 MTBBlogTest >> tearDown [ 
-	MTBBlog reset
+	VORepository setRepository: previousRepository 
 ]
 
 { #category : #tests }
