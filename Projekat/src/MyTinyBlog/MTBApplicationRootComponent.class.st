@@ -14,12 +14,14 @@ MTBApplicationRootComponent class >> canBeRoot [
 
 { #category : #'class initialization' }
 MTBApplicationRootComponent class >> initialize [
-	|app|
-	app:=WAAdmin register: self asApplicationAt: 'TinyBlog'.
-	app 
-		addLibrary: JQDeploymentLibrary;
-		addLibrary: JQUiDeploymentLibrary;
-		addLibrary: TBSDeploymentLibrary 
+	| app |
+app := WAAdmin register: self asApplicationAt: 'TinyBlog'.
+app
+preferenceAt: #sessionClass put: MTBSession.
+app
+addLibrary: JQDeploymentLibrary;
+addLibrary: JQUiDeploymentLibrary;
+addLibrary: TBSDeploymentLibrary
 ]
 
 { #category : #rendering }

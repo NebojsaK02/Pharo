@@ -20,7 +20,7 @@ MTBScreenComponent >> children [
 
 { #category : #initialization }
 MTBScreenComponent >> createHeaderComponent [
-	^ MTBHeaderComponent new 
+	^ MTBHeaderComponent from: self
 ]
 
 { #category : #initialization }

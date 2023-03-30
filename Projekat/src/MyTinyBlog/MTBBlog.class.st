@@ -2,7 +2,8 @@ Class {
 	#name : #MTBBlog,
 	#superclass : #Object,
 	#instVars : [
-		'posts'
+		'posts',
+		'adminUser'
 	],
 	#category : #MyTinyBlog
 }
@@ -46,6 +47,17 @@ MTBBlog class >> current [
 	ifEmpty: [ self new save ]
 ]
 
+{ #category : #'as yet unclassified' }
+MTBBlog class >> defaultAdminLogin [
+^ 'admin'
+
+]
+
+{ #category : #'as yet unclassified' }
+MTBBlog class >> defaultAdminPassword [
+^ 'topsecret'
+]
+
 { #category : #initialization }
 MTBBlog class >> initialize [ 
 self reset
@@ -65,6 +77,11 @@ MTBBlog class >> isVoyageRoot [
 { #category : #initialization }
 MTBBlog class >> reset [ 
 	self initializeVoyageOnMemoryDB
+]
+
+{ #category : #'as yet unclassified' }
+MTBBlog >> administrator [
+	^ adminUser
 ]
 
 { #category : #'as yet unclassified' }
@@ -93,17 +110,31 @@ MTBBlog >> allVisibleBlogPostsFromCategory: aCategory [
 	and: [ p isVisible ] ]
 ]
 
+{ #category : #'as yet unclassified' }
+MTBBlog >> createAdministrator [
+^ MTBAdministrator
+login: self class defaultAdminLogin
+password: self class defaultAdminPassword
+]
+
 { #category : #initialization }
 MTBBlog >> initialize [ 
-
 super initialize.
-posts:=OrderedCollection new 
+posts:=OrderedCollection new.
+adminUser:= self createAdministrator
 ]
 
 { #category : #initialization }
 MTBBlog >> removeAllPosts [
 	posts := OrderedCollection new.
 	self save.
+]
+
+{ #category : #removing }
+MTBBlog >> removeBlogPost: aPost [
+posts remove: aPost ifAbsent: [ ].
+self save.
+
 ]
 
 { #category : #initialization }

@@ -2,7 +2,8 @@ Class {
 	#name : #MTBPostsListComponent,
 	#superclass : #MTBScreenComponent,
 	#instVars : [
-		'currentCategory'
+		'currentCategory',
+		'showLoginError'
 	],
 	#category : #'MyTinyBlog-Components'
 }
@@ -34,6 +35,26 @@ MTBPostsListComponent >> currentCategory [
 { #category : #'as yet unclassified' }
 MTBPostsListComponent >> currentCategory: anObject [
 	currentCategory := anObject
+]
+
+{ #category : #'as yet unclassified' }
+MTBPostsListComponent >> goToAdministrationView [
+	self call: MTBAdminComponent new
+]
+
+{ #category : #'as yet unclassified' }
+MTBPostsListComponent >> hasLoginError [
+^ showLoginError ifNil: [ false ]
+]
+
+{ #category : #'as yet unclassified' }
+MTBPostsListComponent >> loginErrorMessage [
+^ 'Incorrect login and/or password'
+]
+
+{ #category : #'as yet unclassified' }
+MTBPostsListComponent >> loginErrorOccurred [
+showLoginError := true
 ]
 
 { #category : #'as yet unclassified' }
@@ -72,10 +93,34 @@ self renderPostColumnOn: html ] ]
 ]
 
 { #category : #'as yet unclassified' }
+MTBPostsListComponent >> renderLoginErrorMessageIfAnyOn: html [
+self hasLoginError ifTrue: [
+showLoginError := false.
+html tbsAlert
+beDanger ;
+with: self loginErrorMessage
+]
+
+]
+
+{ #category : #'as yet unclassified' }
 MTBPostsListComponent >> renderPostColumnOn: html [
 	html tbsColumn
-		extraSmallSize: 12;
-		smallSize: 10;
-		mediumSize: 8;
-		with: [ self basicRenderPostsOn: html ]
+extraSmallSize: 12;
+smallSize: 10;
+mediumSize: 8;
+with: [
+self renderLoginErrorMessageIfAnyOn: html.
+self basicRenderPostsOn: html ]
+]
+
+{ #category : #'as yet unclassified' }
+MTBPostsListComponent >> tryConnectionWithLogin: login andPassword: password [
+(login = self blog administrator login and: [
+(SHA256 hashMessage: password) = self blog administrator
+password ])
+ifTrue: [
+self session currentAdmin: self blog administrator.
+self goToAdministrationView ]
+ifFalse: [ self loginErrorOccurred ]
 ]
