@@ -223,6 +223,24 @@ AplikacijaStandalonePresenter >> muskoButton [
 ]
 
 { #category : #accessing }
+AplikacijaStandalonePresenter >> napisiUFajl [
+	|fajl stream tIme tPre tSif tBr1 tBr2 tDat tPol|
+	fajl:='fajl.txt' asFileReference.
+	
+	tIme:= imeTextInput text.
+	tPre:= prezimeTextInput text.
+	tBr1:= brojTelefonaInput number asString.
+	tBr2:= brojKucnogInput number asString.
+	tSif:= sifraInput text.
+	tDat:= datumInput date asString.
+	tPol:= (polButtons associations detect:[ :each | each value state ]) key.
+		
+	stream:=fajl writeStream.
+	stream nextPutAll: tIme,'|', tPre,'|',tBr1,'|',tBr2,'|',tSif,'|',tDat,'|',tPol.
+	stream close.
+]
+
+{ #category : #accessing }
 AplikacijaStandalonePresenter >> napuniFormuWorkingModel [
 	| model |
 	model := self workingModel.
@@ -258,13 +276,6 @@ AplikacijaStandalonePresenter >> polLabel [
 { #category : #accessing }
 AplikacijaStandalonePresenter >> polLabel:anObject [
 	polLabel:=anObject
-]
-
-{ #category : #accessing }
-AplikacijaStandalonePresenter >> predaj [
-	self napuniModelFormom.
-	self model: workingModel.
-	self announcingObject valueChanged.
 ]
 
 { #category : #accessing }
@@ -321,6 +332,7 @@ AplikacijaStandalonePresenter >> sifraLabel:anObject [
 AplikacijaStandalonePresenter >> submit [
 	self napuniModelFormom.
 	self model: workingModel.
+	self napisiUFajl.
 	self announcingObject valueChanged.
 ]
 
