@@ -224,8 +224,13 @@ AplikacijaStandalonePresenter >> muskoButton [
 
 { #category : #accessing }
 AplikacijaStandalonePresenter >> napisiUFajl [
-	|fajl stream tIme tPre tSif tBr1 tBr2 tDat tPol|
+	|fajl stream1 stream2 tIme tPre tSif tBr1 tBr2 tDat tPol tekst n|
 	fajl:='fajl.txt' asFileReference.
+	stream1:=fajl readStream.
+	tekst:=stream1 upToEnd.
+	stream1 close.
+	
+	n:=String with: Character cr.
 	
 	tIme:= imeTextInput text.
 	tPre:= prezimeTextInput text.
@@ -235,9 +240,9 @@ AplikacijaStandalonePresenter >> napisiUFajl [
 	tDat:= datumInput date asString.
 	tPol:= (polButtons associations detect:[ :each | each value state ]) key.
 		
-	stream:=fajl writeStream.
-	stream nextPutAll: tIme,'|', tPre,'|',tBr1,'|',tBr2,'|',tSif,'|',tDat,'|',tPol.
-	stream close.
+	stream2:=fajl writeStream.
+	stream2 nextPutAll: tekst,n,tIme,'|', tPre,'|',tBr1,'|',tBr2,'|',tSif,'|',tDat,'|',tPol.
+	stream2 close.
 ]
 
 { #category : #accessing }
